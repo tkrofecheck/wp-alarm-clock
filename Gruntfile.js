@@ -16,7 +16,7 @@ module.exports = function(grunt) {
     // Build CSS
     grunt.registerTask('css', ['clean', 'sass', 'cssmin']);
     // Build JS
-    grunt.registerTask('js', ['clean', 'copy:json', 'jshint', 'concat:js', 'uglify']);
+    grunt.registerTask('js', ['clean', 'copy:json', 'jshint', 'uglify']);
 
     require('load-grunt-tasks')(grunt);
 
