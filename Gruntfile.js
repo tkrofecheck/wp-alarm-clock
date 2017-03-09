@@ -40,7 +40,7 @@ module.exports = function(grunt) {
                 },
                 files: [{
                     expand: true,
-                    cwd: 'css/scss',
+                    cwd: 'css',
                     src: ['*.scss'],
                     dest: '<%= dirBuild %>/<%= dirCssPath %>',
                     ext: '.css'

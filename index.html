@@ -1,1 +1,58 @@
-index.html
+<!DOCTYPE html>
+<html manifest="manifest.appcache">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Tim Krofecheck"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+
+    <title>Alarm Clock</title>
+    
+    <link rel="stylesheet" href="css/clock.css" />
+
+    <script>
+        // Check if a new cache is available on page load.
+        window.applicationCache.addEventListener('updateready', function(e) {
+            if (window.applicationCache.status == window.applicationCache.UPDATEREADY) {
+                // Browser downloaded a new app cache.
+                if (confirm('A new version of this site is available. Load it?')) {
+                    window.location.reload();
+                }
+            } else {
+                // Manifest didn't changed. Nothing new to server.
+            }
+        }, false);
+    </script>
+</head>
+
+<body>
+    <div id="clock"></div>
+
+    <div id="alarm">
+    	<span>Alarm</span>
+    	<select name="hour"></select>
+    	<select name="minute"></select>
+    	<input type="radio" name="alarm" value="on" onclick="javascript:alarm('set');"/>ON
+    	<input type="radio" name="alarm" value="off" onclick="javascript:alarm('set');" checked="checked"/>OFF
+    </div>
+
+    <div id="buzzer">
+    	<span>THIS IS YOUR ALARM! GET UP!</span>
+    	<button class="snooze" value="snooze">Snooze</button>
+    </div>
+
+    <script src="js/clock.js"></script>
+    <script>
+    	function setAlarm() {
+    		if (typeof wp !== 'undefined' && wp !== null) {
+    			wp.alarmClock.setAlarm();
+    		} else {
+    			setTimeout(function() {
+    				setAlarm();
+    			}, 100);
+    		}
+    	}
+    </script>
+</body>
+
+</html>
