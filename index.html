@@ -30,10 +30,8 @@
 
     <div id="alarm">
     	<span>Alarm</span>
-    	<select name="hour"></select>
-    	<select name="minute"></select>
-    	<input type="radio" name="alarm" value="on" onclick="javascript:alarm('set');"/>ON
-    	<input type="radio" name="alarm" value="off" onclick="javascript:alarm('set');" checked="checked"/>OFF
+    	<input type="radio" name="alarm" value="on"/>ON
+    	<input type="radio" name="alarm" value="off" checked="checked"/>OFF
     </div>
 
     <div id="buzzer">
@@ -41,6 +39,7 @@
     	<button class="snooze" value="snooze">Snooze</button>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="js/clock.js"></script>
     <script>
     	function setAlarm() {
@@ -49,7 +48,7 @@
     		} else {
     			setTimeout(function() {
     				setAlarm();
-    			}, 100);
+    			}, 500);
     		}
     	}
     </script>
