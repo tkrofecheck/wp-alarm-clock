@@ -1,8 +1,65 @@
-// Clock Time
-@import 'partials/time';
+// Variables
+@import 'partials/variables';
 
-// Set Alarm
-@import 'partials/set-alarm';
+// Mix-ins
+@import 'partials/mixins';
 
-// Buzzer
-@import 'partials/buzzer';
+body {
+	background: $bodyBG;
+	color: $baseFontColor;
+	font-family: $baseFont;
+	font-size: $baseFontSize;
+}
+
+div {
+	position: relative;
+	display: block;
+	margin: 0;
+	padding: 0;
+	border: none;
+	text-align: center;
+}
+
+#clock {
+	display: flex;
+
+	.date {
+		float: left;
+		display: inline-flex;
+		left: 0;
+		top: 0;
+		font-size: 100%; // 16px
+		width: 25%;
+	}
+
+	.time {
+		float: left;
+		display: inline-flex;
+		width: 25%;
+		font-family: $clockFont;
+		color: $clockFontColor;
+		font-size: 300%; // 48px
+	}
+
+	.alarm {
+		width: 25%;
+		display: block;
+
+		span {
+			
+		}
+
+		input {
+			display: block;
+			width: 25%;
+		}
+
+		input:first-child {
+			float: left;
+		}
+
+		input:last-child {
+			float: right;
+		}
+	}
+}

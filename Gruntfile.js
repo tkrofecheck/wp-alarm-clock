@@ -71,7 +71,6 @@ module.exports = function(grunt) {
                 dest: 'manifest.appcache',
                 src: [
                 	'index.html',
-                    '<%= dirDataPath %>/*.json',
                     '<%= dirCssPath %>/*.css',
                     '<%= dirJsPath %>/*.js',
                     '<%= dirImgPath %>/*.jpg',
