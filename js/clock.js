@@ -1,13 +1,14 @@
 var wp = wp || {};
 
 wp.alarmClock = {
-	$alarm: null,
-	$buzzer: null,
-	$clock: null,
-	$alert: null,
+	divAlarm: null,
+	divBuzzer: null,
+	divClock: null,
+	divAlert: null,
 
 	config: {
 		alarmMessage: 'THIS IS YOUR ALARM! GET UP!',
+		months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 		hour: {
 			name: 'hour',
 			min: 1,
@@ -33,7 +34,6 @@ wp.alarmClock = {
 
 	
 	meridiem: null,
-	months: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
 	time: null,
 	month: null,
 	date: null,
@@ -46,10 +46,10 @@ wp.alarmClock = {
 		var _this = this,
 			cfg = _this.config;
 
-		_this.$clock = $('#clock');
-		_this.$alarm = $('#alarm');
-		_this.$buzzer = $('#buzzer');
-		_this.$alert = $('#alert');
+		_this.divClock = document.getElementById('clock');
+		_this.divAlarm = document.getElementById('alarm');
+		_this.divBuzzer = document.getElementById('buzzer');
+		_this.divAlert = document.getElementById('alert');
 
 		_this.setClock();
 
@@ -93,9 +93,9 @@ wp.alarmClock = {
 
 	setClock: function() {
 		var _this = this,
-			$date = _this.$clock.find('.date'),
-			$time = _this.$clock.find('.time'),
-			$buzzer = _this.$clock.find('.buzzer'),
+			divDate = document.querySelector('.date'),
+			divTime = document.querySelector('.time'),
+			divBuzzer = document.querySelector('#buzzer'),
 			time = new Date(), // get date from client computer
 			hour = time.getHours(), // get hours using Date.prototype.getHours()
 			min = time.getMinutes(), // get minutes using Date.prototype.getMinutes()
@@ -105,18 +105,22 @@ wp.alarmClock = {
 		_this.date = time.getDate();
 		_this.year = time.getFullYear();
 
-		$date.html(_this.months[_this.month] + ' ' + _this.date + ', ' + _this.year);
+		divDate.innerHTML = _this.config.months[_this.month] + ' ' + _this.date + ', ' + _this.year;
 
 		// adjust display of hour, minutes and seconds
-		$time.html(_this.formatHour(hour) + ':' + _this.doubleDigit(min) + ':' + _this.doubleDigit(sec) + " " + _this.meridiem);
+		divTime.innerHTML = _this.formatHour(hour) + ':' + _this.doubleDigit(min) + ':' + _this.doubleDigit(sec) + " " + _this.meridiem;
 
 		// Use setTimeout to allow clock to refresh as seconds count up
 		// Check alarm with current time (hh:mm) to determine if alarm should be triggered
 		_this.refreshClock = setTimeout(function() {
 			if (_this.alarmOn && _this.alarmTime !== null) {
 				if ((time.getHours() === _this.alarmTime.getHours()) && (time.getMinutes() === _this.alarmTime.getMinutes())) {
-					_this.$alert.html(_this.config.alarmMessage).removeClass('snoozed');
-					_this.$alert.show();
+					if (/\bsnoozed/.test(_this.divAlert.classList)) {
+						_this.removeClass(_this.divAlert, 'snoozed');
+					}
+
+					_this.divAlert.innerHTML = _this.config.alarmMessage;
+					_this.divAlert.style.display = 'block';
 				}
 			}
 			_this.setClock();
@@ -125,18 +129,25 @@ wp.alarmClock = {
 
 	createAlarmDropDown: function(obj) {
 		var _this = this,
-			$select,
-			$option,
+			dd_select,
+			sel_option,
 			val,
 			label,
 			i;
 
-		_this.$alarm.find('.wrapper .dropdowns').append($('<select name="' + obj.name + '" id="' + obj.name + '"/>'));
-		$select = $('select[name="' + obj.name + '"]');
+		dd_select = document.createElement('select');
+		dd_select.setAttribute('name', obj.name);
+		dd_select.setAttribute('id', obj.name);
+		_this.divAlarm.querySelector('.wrapper .dropdowns').appendChild(dd_select);
+
+		dd_select = document.querySelector('select[name="' + obj.name + '"]');
 
 		if (!isNaN(obj.min) || !isNaN(obj.max)) {
 			if (typeof obj.name !== 'undefined' && obj.name !== null && obj.name !== '') {
-				$select.append($('<option label="' + obj.name + '" value="' + obj.name + '"/>'));
+				sel_option = document.createElement('option');
+				sel_option.setAttribute('label', obj.name);
+				sel_option.setAttribute('value', obj.name);
+				dd_select.appendChild(sel_option);
 			}
 
 			for (i = obj.min; i <= obj.max; i++) {
@@ -152,21 +163,28 @@ wp.alarmClock = {
 					val = i;
 				}
 
-				$option = $('<option value="' + val + '">' + label + '</option>');
-				$select.append($option);
+				sel_option = document.createElement('option');
+				sel_option.setAttribute('value', val);
+				sel_option.setAttribute('label', label);
+				dd_select.appendChild(sel_option);
 			}
 		} else {
-			$option = $('<option value="' + obj.min + '">' + obj.min + '</option>');
-			$select.append($option);
-			$option = $('<option value="' + obj.max + '">' + obj.max + '</option>');
-			$select.append($option);
+			sel_option = document.createElement('option');
+			sel_option.setAttribute('value', obj.min);
+			sel_option.innerHTML = obj.min;
+			dd_select.appendChild(sel_option);
+
+			sel_option = document.createElement('option');
+			sel_option.setAttribute('value', obj.max);
+			sel_option.innerHTML = obj.max;
+			dd_select.appendChild(sel_option);
 		}
 	},
 
 	setAlarm: function() {
 		var _this = this,
-			hour = parseInt($('select[name="hour"]').val()),
-			min = parseInt($('select[name="minute"]').val()),
+			hour = parseInt(document.getElementById('hour').value),
+			min = parseInt(document.getElementById('minute').value),
 			alarmTime = new Date(),
 			hour24 = function(h) {
 				var hh = h;
@@ -178,7 +196,9 @@ wp.alarmClock = {
 				return h;
 			};
 
-		_this.meridiem = $('select[name="meridiem"]').val();
+		console.log('setAlarm');
+
+		_this.meridiem = document.querySelector('select[name="meridiem"]').value;
 
 		alarmTime.setHours(hour24(hour));
 		alarmTime.setMinutes(min);
@@ -191,6 +211,22 @@ wp.alarmClock = {
 		}
 	},
 
+	addClass: function(el, className) {
+		if (el.classList) {
+			el.classList.add(className);
+		} else {
+			el.className += ' ' + className;
+		}
+	},
+
+	removeClass: function(el, cls) {
+		if (el.classList) {
+			el.classList.remove(className);
+		} else {
+			el.className = el.className.replace(new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'), ' ');
+		}
+	},
+
 	snoozeAlarm: function(time) {
 		var _this = this,
 			snoozeMessage = function(time) {
@@ -199,37 +235,50 @@ wp.alarmClock = {
 
 		_this.alarmTime = new Date();
 		_this.alarmTime.setMinutes(_this.alarmTime.getMinutes() + time);
-		_this.$alert.html(snoozeMessage(time)).addClass('snoozed');
+		_this.divAlert.innerHTML = snoozeMessage(time);
+		_this.addClass(_this.divAlert, 'snoozed');
 	},
 
 	bindEvents: function() {
-		var _this = this;
+		var _this = this,
+			elements,
+			changeAlarm = function(evt) {
+				var alarmChecked;
 
-		$('input, select').change(function(evt) {
-			if (evt.currentTarget.name === 'alarm') {
-				if ($(this).is(':checked')) {
-					console.log('alarm ON');
-					_this.alarmOn = true;
-					_this.setAlarm();
+				console.log('evt', evt);
+				if (evt.currentTarget !== null && evt.currentTarget.name === 'alarm') {
+					alarmChecked = evt.currentTarget.checked;
+
+					if (alarmChecked) {
+						console.log('alarm ON');
+						_this.alarmOn = true;
+						_this.setAlarm();
+					} else {
+						console.log('alarm OFF');
+						_this.alarmOn = false;
+					}
 				} else {
-					console.log('alarm OFF');
-					_this.alarmOn = false;
+					console.log('dropdown', evt.currentTarget);
+					if (_this.alarmOn) {
+						_this.setAlarm();
+					}
 				}
-			} else {
-				if (_this.alarmOn) {
-					_this.setAlarm();
-				}
-			}
 
-			return true;
-		});
+				return true;
+			},
+			snoozeAlarm = function() {
+				_this.snoozeAlarm(_this.config.snooze.time);
+			};
 
-		$('button.snooze').click(function() {
-			_this.snoozeAlarm(_this.config.snooze.time);
+		document.querySelector('button.snooze').addEventListener('click', snoozeAlarm);
+
+		elements = document.querySelectorAll('select,input');
+		Array.prototype.forEach.call(elements, function(el, i){
+			el.addEventListener('change', changeAlarm);
 		});
 	}
 };
 
-$(function() {
+(function() {
 	wp.alarmClock.init();
-});
+})();
