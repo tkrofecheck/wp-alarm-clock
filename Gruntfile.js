@@ -12,11 +12,11 @@ module.exports = function(grunt) {
         grunt.log.ok('grunt js		build js');
     });
     // Build all
-    grunt.registerTask('build', ['clean', 'copy:html', 'copy:json', 'minjson', 'sass', 'imagemin', 'copy:images', 'cssmin', 'jshint', 'uglify', 'manifest', 'copy:manifest', ]);
+    grunt.registerTask('build', ['clean', 'copy:html', 'sass', 'cssmin', 'jshint', 'uglify', 'manifest', 'copy:manifest', ]);
     // Build CSS
     grunt.registerTask('css', ['clean', 'sass', 'cssmin']);
     // Build JS
-    grunt.registerTask('js', ['clean', 'copy:json', 'jshint', 'uglify']);
+    grunt.registerTask('js', ['clean', 'jshint', 'uglify']);
 
     require('load-grunt-tasks')(grunt);
 
@@ -24,10 +24,8 @@ module.exports = function(grunt) {
         // File Path Setup
         dirBuild: 'build',
         dirDist: 'dist',
-        dirDataPath: 'data',
         dirJsPath: 'js',
         dirCssPath: 'css',
-        dirImgPath: 'images',
         // Build Tasks
         clean: {
             all: ['dist', 'build']
@@ -44,20 +42,6 @@ module.exports = function(grunt) {
                     src: ['*.scss'],
                     dest: '<%= dirBuild %>/<%= dirCssPath %>',
                     ext: '.css'
-                }]
-            }
-        },
-        imagemin: { // Task
-            dynamic: { // Another target
-                files: [{
-                    expand: true, // Enable dynamic expansion
-                    cwd: '<%= dirImgPath %>', // Src matches are relative to this path
-                    src: [
-                        '*.{png,jpg,gif}',
-                        '**/*.{png,jpg,gif}',
-                        '**/**/*.{png,jpg,gif}'
-                    ], // Actual patterns to match
-                    dest: '<%= dirBuild %>/<%= dirImgPath %>' // Destination path prefix
                 }]
             }
         },
@@ -104,20 +88,6 @@ module.exports = function(grunt) {
                     src: '*.html',
                     dest: '<%= dirDist %>/'
                 }]
-            },
-            images: {
-                files: [{
-                    expand: true,
-                    cwd: '<%= dirBuild %>/<%= dirImgPath %>/',
-                    src: '**',
-                    dest: '<%= dirDist %>/<%= dirImgPath %>/',
-                }]
-            },
-            json: {
-                expand: true,
-                cwd: '<%= dirDataPath %>/',
-                src: '**',
-                dest: '<%= dirBuild %>/<%= dirDataPath %>/'
             }
         },
         cssmin: {
@@ -143,45 +113,32 @@ module.exports = function(grunt) {
                 '<%= dirJsPath %>/*.js'
             ]
         },
-        minjson: {
-            compile: {
-                files: {
-                    '<%= dirDist %>/data/data.min.json': [
-                        '<%= dirBuild %>/data/clock.json'
-                    ]
-                }
-            }
-        },
         uglify: {
             build: {
                 options: {
-                    preserveComments: false, // set to true to keep comments in the code
-                    compress: {
-                        drop_console: false, // removes all console.log incase there left in the code
-                        hoist_funs: true, // hoist function declarations
-                        unused: true, // drop unreferenced functions and variables
-                        if_return: true, // optimizations for if/return and if/continue
-                        booleans: true, //various optimizations for boolean context
-                        comparisons: true, // apply certain optimizations to binary nodes
-                        conditionals: true, // apply optimizations for if-s and conditional expressions
-                        properties: true, // rewrite property access using the dot notation
-                        sequences: true // join consecutive simple statements using the comma operator
-                    },
-                    sourceMap: true,
-                    sourceMapIncludeSources: true
+                    preserveComments: true, // set to true to keep comments in the code
+                    beautify: true
                 },
                 files: [{
                     expand: true,
                     cwd: '<%= dirJsPath %>',
-                    src: ['*.js', 'app/*.js'],
+                    src: ['*.js'],
                     dest: '<%= dirBuild %>/<%= dirJsPath %>/'
                 }]
             },
             dist: {
                 options: {
                     preserveComments: false, // set to true to keep comments in the code
+                    sourceMap: true,
+                    sourceMapIncludeSources: true,
                     compress: {
                         drop_console: true, // removes all console.log incase there left in the code
+                        unused: true, // drop unreferenced functions and variables
+                        booleans: true, //various optimizations for boolean context
+                        comparisons: true, // apply certain optimizations to binary nodes
+                        conditionals: true, // apply optimizations for if-s and conditional expressions
+                        properties: true, // rewrite property access using the dot notation
+                        sequences: true // join consecutive simple statements using the comma operator
                     },
                     //wrap: true
                 },
@@ -196,10 +153,8 @@ module.exports = function(grunt) {
             },
             dist: {
                 files: [
-                    '<%= dirSrc %>/data/*.json',
-                    '<%= dirSrc %>/scss/*.scss',
-                    '<%= dirSrc %>/<%= dirJsPath %>/*.js',
-                    '<%= dirSrc %>/<%= dirJsPath %>/app/*.js'
+                    '<%= dirCssPath %>/*.scss',
+                    '<%= dirJsPath %>/*.js',
                 ],
                 tasks: ['build'],
                 options: {

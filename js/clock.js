@@ -1,7 +1,10 @@
 var wp = wp || {};
 
 wp.alarmClock = {
+	$alarm: null,
+	$buzzer: null,
 	$clock: null,
+	$alert: null,
 
 	config: {
 		alarmMessage: 'THIS IS YOUR ALARM! GET UP!',
@@ -40,16 +43,19 @@ wp.alarmClock = {
 	alarmTime: null,
 
 	init: function() {
-		var _this = this;
+		var _this = this,
+			cfg = _this.config;
 
 		_this.$clock = $('#clock');
-		_this.$alarm = $('#');
+		_this.$alarm = $('#alarm');
+		_this.$buzzer = $('#buzzer');
+		_this.$alert = $('#alert');
 
 		_this.setClock();
 
-		_this.createAlarmDropDown(_this.config.hour);
-		_this.createAlarmDropDown(_this.config.minute);
-		_this.createAlarmDropDown(_this.config.meridiem);
+		_this.createAlarmDropDown(cfg.hour);
+		_this.createAlarmDropDown(cfg.minute);
+		_this.createAlarmDropDown(cfg.meridiem);
 
 		_this.bindEvents();
 	},
@@ -109,8 +115,8 @@ wp.alarmClock = {
 		_this.refreshClock = setTimeout(function() {
 			if (_this.alarmOn && _this.alarmTime !== null) {
 				if ((time.getHours() === _this.alarmTime.getHours()) && (time.getMinutes() === _this.alarmTime.getMinutes())) {
-					$buzzer.find('span').html(_this.config.alarmMessage);
-					$buzzer.show();
+					_this.$alert.html(_this.config.alarmMessage).removeClass('snoozed');
+					_this.$alert.show();
 				}
 			}
 			_this.setClock();
@@ -125,7 +131,7 @@ wp.alarmClock = {
 			label,
 			i;
 
-		_this.$clock.find('.alarm').append($('<select name="' + obj.name + '" id="' + obj.name + '"/>'));
+		_this.$alarm.find('.wrapper .dropdowns').append($('<select name="' + obj.name + '" id="' + obj.name + '"/>'));
 		$select = $('select[name="' + obj.name + '"]');
 
 		if (!isNaN(obj.min) || !isNaN(obj.max)) {
@@ -193,7 +199,7 @@ wp.alarmClock = {
 
 		_this.alarmTime = new Date();
 		_this.alarmTime.setMinutes(_this.alarmTime.getMinutes() + time);
-		_this.$clock.find('.buzzer span').html(snoozeMessage(time));
+		_this.$alert.html(snoozeMessage(time)).addClass('snoozed');
 	},
 
 	bindEvents: function() {
@@ -201,13 +207,13 @@ wp.alarmClock = {
 
 		$('input, select').change(function(evt) {
 			if (evt.currentTarget.name === 'alarm') {
-				if (this.value === 'off') {
-					console.log('alarm OFF');
-					_this.alarmOn = false;
-				} else {
+				if ($(this).is(':checked')) {
 					console.log('alarm ON');
 					_this.alarmOn = true;
 					_this.setAlarm();
+				} else {
+					console.log('alarm OFF');
+					_this.alarmOn = false;
 				}
 			} else {
 				if (_this.alarmOn) {

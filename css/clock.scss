@@ -1,65 +1,195 @@
 // Variables
 @import 'partials/variables';
 
-// Mix-ins
-@import 'partials/mixins';
+*, html, body {
+	margin: 0;
+	padding: 0;
+}
 
 body {
 	background: $bodyBG;
 	color: $baseFontColor;
 	font-family: $baseFont;
 	font-size: $baseFontSize;
+	width: 100%;
+	height: 100%;
 }
 
-div {
-	position: relative;
-	display: block;
+div, span, p {
 	margin: 0;
 	padding: 0;
 	border: none;
-	text-align: center;
+}
+
+#main {
+	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 10px;
+	background: $mainBG;
+	border-bottom: 1px solid white;
+
+	.flex:first-child {
+		display: inline-flex;
+		width: 49%;
+		height: 100%;
+	}
+	.flex:nth-child(2) {
+		display: inline-flex;
+		width: 49%;
+		height: 100%;
+	}
+	.flex:last-child {
+		display: inline-flex;
+		width: 100%;
+		height: 100%;
+	}
+
+	.flex:nth-child(2) {
+		border-left: 1px solid white;
+	}
 }
 
 #clock {
-	display: flex;
+    display: table;
+    width: 100%;
+    height: 100%;
 
-	.date {
-		float: left;
-		display: inline-flex;
-		left: 0;
-		top: 0;
-		font-size: 100%; // 16px
-		width: 25%;
-	}
-
-	.time {
-		float: left;
-		display: inline-flex;
-		width: 25%;
-		font-family: $clockFont;
-		color: $clockFontColor;
-		font-size: 300%; // 48px
-	}
-
-	.alarm {
-		width: 25%;
+    .wrapper {
 		display: block;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+
+		.date {
+			font-size: 100%; // 16px
+		}
+
+		.time {
+			font-family: $clockFont;
+			color: $clockFontColor;
+			font-size: 300%; // 48px
+		}
+	}
+}
+
+#alarm {
+	display: table;
+	width: 100%;
+	height: 100%;
+
+	.wrapper{
+		display: block;
+		width: 100%;
+		height: 100%;
+		text-align: center;
 
 		span {
-			
-		}
-
-		input {
 			display: block;
-			width: 25%;
 		}
 
-		input:first-child {
-			float: left;
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 60px;
+			height: 34px;
+			margin-top: 10px;
+
+			input {
+				display: none;
+			}
 		}
 
-		input:last-child {
-			float: right;
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			background-color: #ccc;
+			-webkit-transition: .4s;
+			transition: .4s;
+    		color: #000;
+    		font-size: 65%;
+
+			&:before {
+				position: absolute;
+				content: "off";
+				height: 26px;
+				width: 26px;
+				left: 4px;
+				bottom: 4px;
+				background-color: white;
+				-webkit-transition: .4s;
+				transition: .4s;
+			}
 		}
+
+		input:checked + .slider {
+			background-color: #2196F3;
+		}
+
+		input:focus + .slider {
+			box-shadow: 0 0 1px #2196F3;
+		}
+
+		input:checked + .slider:before {
+			content: 'on';
+			-webkit-transform: translateX(26px);
+			-ms-transform: translateX(26px);
+			transform: translateX(26px);
+		}
+
+		.dropdowns {
+			padding: 10px;
+		}
+	}
+}
+
+#buzzer {
+	display: table;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+
+	.wrapper {
+		display: table-cell;
+
+		span {
+			position: absolute;
+			display: table-cell;
+			vertical-align: middle;
+			right: 0;
+			bottom: 0;
+		}
+
+		button.snooze {
+			border-radius: 50px;
+	    	height: 100px;
+	    	width: 100px;
+	   		font-size: 125%;
+	   		background: lightpink;
+
+	   		&:focus {outline:0;}
+		}
+	}
+}
+
+#alert {
+	position: absolute;
+	display: none;
+	width: 100%;
+	height: 100%;
+	background: #f00;
+	color: #fff;
+	font-size: 500%;
+	text-align: center;
+
+	&.snoozed {
+		background: #0cf;
+		color: #000;
 	}
 }

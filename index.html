@@ -26,21 +26,40 @@
 </head>
 
 <body>
-    <div id="clock">
-	    <div class="date"></div>
-	    <div class="time"></div>
+    
+	<div id="main">
+		<div class="flex">
+			<div id="clock">
+		    	<div class="wrapper">
+		    		<div class="date"></div>
+		    		<div class="time"></div>
+				</div>
+			</div>
+		</div>
 
-	    <div class="alarm">
-	    	<span>Alarm</span>
-	    	<input type="radio" name="alarm" value="on"/>ON
-	    	<input type="radio" name="alarm" value="off" checked="checked"/>OFF
-	    </div>
+	    <div class="flex">
+		    <div id="alarm">
+		    	<div class="wrapper">
+		    		<span>Alarm Setup</span>
+		    		<label class="switch">
+		    			<input type="checkbox" name="alarm" value="on"/>
+		    			<div class="slider" ></div>
+		    		</label>
+		    		<div class="dropdowns"></div>
+		    	</div>
+		    </div>
+		</div>
 
-	    <div class="buzzer">
-	    	<span></span>
-	    	<button class="snooze" value="snooze">Snooze</button>
-	    </div>
+	    <div class="flex">
+	    	<div id="buzzer">
+		    	<div class="wrapper">
+		    		<button class="snooze" value="snooze">Snooze</button>
+		    	</div>
+		    </div>
+		</div>
 	</div>
+
+	<div id="alert"></div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
     <script src="js/clock.js"></script>
