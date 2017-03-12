@@ -36,3 +36,6 @@ You may test the compiled code in a browser
 * theme (fonts, colors, images, sounds)
 * allow different layout (horizontal, vertical, 4 corners)
 * possible idea: include current location temperature
+
+To view code in Github, please visit:
+[https://github.com/tkrofecheck/wp-alarm-clock](https://github.com/tkrofecheck/wp-alarm-clock)
