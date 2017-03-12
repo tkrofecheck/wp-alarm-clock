@@ -1,1 +1,0 @@
-{"version":3,"sources":["../../js/clock.js"],"names":["loadClock"],"mappings":"AAAA,QAASA","file":"clock.js","sourcesContent":["function loadClock() {}"]}
