@@ -25,3 +25,14 @@ Your deployment code will reside here:
 _wp-alarm-clock/dist_
 
 You may test the compiled code in a browser
+
+
+## Next Steps for improvement
+
+1. I would like to enhance this by converting to an AMD module with config object passed in.
+2. Implement support for custom options in config object
+* allow different snooze times
+* alarm message / animation
+* theme (fonts, colors, images, sounds)
+* allow different layout (horizontal, vertical, 4 corners)
+* possible idea: include current location temperature
